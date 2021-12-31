@@ -4,10 +4,17 @@ module.exports = {
 	name: 'pingin',
 	execute(message, args) {
 		if(args.length >= 2 && parseInt(args[0]) >= 0 && Object.keys(units).includes(args[1].toLowerCase())) {
-			message.client.usingData(data => {
+			message.client.usingData.then(data => {
+				if(!data.role.length) {
+					message.reply('No role to ping has been set, use !setrole <role>');
+					return;
+				}
 				setTimeout(() => {
 					message.reply('<@&' + data.role + '>');
 				}, parseInt(args[0]) * units[args[1].toLowerCase()]);
+			}, reject => {
+				console.log(reject);
+				message.channel.send('An error has occured');
 			});
 		} else {
 			message.channel.send('not a valid time');
