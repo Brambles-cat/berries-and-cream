@@ -5,16 +5,14 @@ const fs = require('fs');
 const client = new Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: Object.keys(Intents.FLAGS) });
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-client.usingData = (callback) => {
+client.usingData = new Promise((resolve, reject) => {
 	fs.readFile('./data.json', 'utf8', (err, jsonString) => {
-		if (err) {
-			console.log(err);
-			return;
-		}
+		if (err) reject(err);
 		const data = JSON.parse(jsonString);
-		callback(data);
+		resolve(data);
 	});
-};
+});
+
 client.writeData = (data) => {
 	fs.writeFile('./data.json', JSON.stringify(data, null, 2), err => {
 		if (err) console.log(err);
@@ -27,7 +25,7 @@ for (const file of commandFiles) {
 }
 
 client.once('ready', () => {
-	console.log('Ready!');
+	console.log('Ready');
 });
 
 client.on('messageCreate', async message => {
@@ -48,4 +46,4 @@ client.on('messageCreate', async message => {
 	}
 });
 
-client.login('pretend there\'s a token here');
+client.login('OTI1NjA4MjUwNjQ3MzkyMjc2.Ycvl2w.VCxGRfKMtfzLuYUEMYtN2z5EChU');
